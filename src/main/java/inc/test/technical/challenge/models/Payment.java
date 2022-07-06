@@ -22,20 +22,19 @@ import lombok.ToString;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "payments")
-@ToString(includeFieldNames = true)
 public class Payment{
 	@Id
 	String payment_id;
 
-	@ManyToOne
 	@JoinColumn(name = "account_id")
-	private Account account;
+	private int account_id;
 
 	private String payment_type;
 
 	private String credit_card;
 
 	private BigInteger amount;
+
 
 	@JsonIgnore
 	private Date created_on;
@@ -47,6 +46,51 @@ public class Payment{
 
 	public void setCredit_card(String credit_card) {
 		this.credit_card = credit_card;
+	}
+
+	public String getPayment_id() {
+		return payment_id;
+	}
+
+	public void setPayment_id(String payment_id) {
+		this.payment_id = payment_id;
+	}
+
+
+
+	public Payment() {
+	}
+
+	public int getAccount_id() {
+		return account_id;
+	}
+
+	public void setAccount_id(int account_id) {
+		this.account_id = account_id;
+	}
+
+	public String getPayment_type() {
+		return payment_type;
+	}
+
+	public void setPayment_type(String payment_type) {
+		this.payment_type = payment_type;
+	}
+
+	public BigInteger getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigInteger amount) {
+		this.amount = amount;
+	}
+
+	public Date getCreated_on() {
+		return created_on;
+	}
+
+	public void setCreated_on(Date created_on) {
+		this.created_on = created_on;
 	}
 
 }
