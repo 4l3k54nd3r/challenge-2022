@@ -15,7 +15,7 @@ public class Consumer{
 	@Autowired
 	PaymentService paymentService;
 
-	@KafkaListener(topics = "online", groupId = "group", containerFactory = "paymentListener")
+	@KafkaListener(topics = {"online", "offline"}, groupId = "group", containerFactory = "paymentListener")
 	public void consume(Payment payment){
 		//System.out.println(payment.getCredit_card() + "\n");
 		try {

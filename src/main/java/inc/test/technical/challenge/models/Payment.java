@@ -11,8 +11,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Entity
 @Table(name = "payments")
 public class Payment{
 	@Id
@@ -31,6 +31,19 @@ public class Payment{
 	@JsonIgnore
 	private Date created_on;
 
+	public Payment() {
+	}
+
+
+	public Payment(String payment_id, int account_id, String payment_type, String credit_card, BigInteger amount,
+			Date created_on) {
+		this.payment_id = payment_id;
+		this.account_id = account_id;
+		this.payment_type = payment_type;
+		this.credit_card = credit_card;
+		this.amount = amount;
+		this.created_on = created_on;
+	}
 
 	public String getCredit_card() {
 		return credit_card;
@@ -46,11 +59,6 @@ public class Payment{
 
 	public void setPayment_id(String payment_id) {
 		this.payment_id = payment_id;
-	}
-
-
-
-	public Payment() {
 	}
 
 	public int getAccount_id() {
@@ -77,10 +85,12 @@ public class Payment{
 		this.amount = amount;
 	}
 
+	@JsonIgnore
 	public Date getCreated_on() {
 		return created_on;
 	}
 
+	@JsonIgnore
 	public void setCreated_on(Date created_on) {
 		this.created_on = created_on;
 	}
