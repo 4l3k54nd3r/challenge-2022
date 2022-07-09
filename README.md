@@ -1,16 +1,17 @@
 # Challenge
 
 ## :computer: How to execute
-mvn clean package
-java -jar target/challenge-0.0.2.jar
+``./mvnw package``
+
+``java -jar target/challenge-0.0.2.jar``
 ## :memo: Notes
 
-Note: This solution uses java 17.
+Requires Java 17 and for the provided docker-compose to be up.
 
-It's fairly simple, the @KafkaListener in the Consumer component receives payments and sends for processing via PaymentService.
+Thw @KafkaListener in the Consumer component receives payments and processes them via PaymentService.
 
-If the payment type is online the server will use a WebClient to check if the payment is valid, then check if there's a matching account_id. If the payment is offline it skips the WebClient check.
+If the validation API takes longer than 1 second to reply then the payment is considered invalid.
 
 ## :pushpin: Things to improve
 
-Figure out how to convert payments from Kafka to Payment objects without the separate POJO.
+- Figure out how to convert payments from Kafka to Payment objects without the separate POJO.
