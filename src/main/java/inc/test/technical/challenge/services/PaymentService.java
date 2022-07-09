@@ -6,10 +6,13 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import inc.test.technical.challenge.models.Account;
 import inc.test.technical.challenge.models.Payment;
@@ -19,12 +22,13 @@ import inc.test.technical.challenge.models.PaymentError.ErrorType;
 import inc.test.technical.challenge.repos.AccountRepository;
 import inc.test.technical.challenge.repos.PaymentRepository;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 @Service
 public class PaymentService{
 
 	@Autowired
-	WebClient webClient;
+	WebClient.Builder webClientBuilder;
 
 	@Autowired
 	PaymentRepository paymentRepository;
@@ -42,7 +46,7 @@ public class PaymentService{
 	public Boolean isValid(Payment payment) {
 		Boolean valid = false;
 		try{
-			ResponseEntity<Void> response = webClient
+			ResponseEntity<Void> response = webClientBuilder.build()
 				.post()
 				.uri("/payment")
 				.body(Mono.just(payment), Payment.class)
@@ -50,35 +54,37 @@ public class PaymentService{
 				.toEntity(Void.class)
 				.timeout(Duration.ofSeconds(1))
 				.onErrorMap(TimeoutException.class, ex -> {
-					logService.logError(new PaymentError(payment.getPayment_id(), ErrorType.NETWORK ,"Gateway timed out"));
+					logService.logError(new PaymentError(payment.getId(), ErrorType.NETWORK ,"Gateway timed out"));
 					return new RuntimeException("Gateway timeout");
 				})
+				.retryWhen(Retry.indefinitely()
+						.filter(ex -> ex instanceof WebClientResponseException.ServiceUnavailable))
+
 				.block();
 			if(response.getStatusCodeValue() == 200){
 				valid = true;
 			}
+			else{
+				System.out.println(response.getStatusCodeValue());
+			}
 		}catch(RuntimeException runtimeException){}
 
 		return valid;
+
 	}
 
 	/**
-	* Writes to database if payment account exists
+	* Writes to database
 	* @param payment Payment object
+	* @param account Account associated with the payment
 	*/
-	private void writeToDatabase(Payment payment) {
-		Optional<Account> accountOptional = accountRepository.findByAccountId(payment.getAccount_id());
+	private void writeToDatabase(Payment payment, Account account) {
 		//Check if account exists
-		if(accountOptional.isPresent()){
-			payment.setCreated_on(new Date(System.currentTimeMillis()));
-			paymentRepository.save(payment);
-			Account account = accountOptional.get();
-			account.setLast_payment_date(new Date(System.currentTimeMillis()));
+			//check if payment has already been processed
+			payment.setCreatedAt(new Date(System.currentTimeMillis()));
+			payment = paymentRepository.save(payment);
+			account.setLastPaymentDate(payment.getCreatedAt());
 			accountRepository.save(account);
-		}
-		else{
-			logService.logError(new PaymentError(payment.getPayment_id(), PaymentError.ErrorType.DATABASE, "Payment doesn't match an account"));
-		}
 	}
 
 	/**
@@ -86,13 +92,20 @@ public class PaymentService{
 	 * @param payment Payment object
 	 */
 	public void processPayment(Payment payment) throws IOException, InterruptedException {
+		Optional<Account> accountOptional = accountRepository.findByAccountId(payment.getAccountId());
+		if(paymentRepository.existsById(payment.getId())){
+			logService.logError(new PaymentError(payment.getId(), PaymentError.ErrorType.OTHER, "Payment already exists in database"));
+		}
+		else if(accountOptional.isEmpty()){
+			logService.logError(new PaymentError(payment.getId(), PaymentError.ErrorType.DATABASE, "Payment doesn't match an account"));
+		}
 		//Offline payment
-		if(payment.getPayment_type().equals(PaymentType.offline)){
-			writeToDatabase(payment);
+		else if(payment.getPaymentType().equals(PaymentType.offline)){
+			writeToDatabase(payment, accountOptional.get());
 		}
 		//Online payment
 		else if(isValid(payment)){
-			writeToDatabase(payment);
+			writeToDatabase(payment, accountOptional.get());
 		}
 	}
 

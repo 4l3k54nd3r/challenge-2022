@@ -4,6 +4,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -15,15 +16,17 @@ public class PaymentError {
 		OTHER
 	}
 
-	String payment_id;
+	@JsonProperty("payment_id")
+	String paymentId;
 
 	@Enumerated(EnumType.STRING)
 	private ErrorType error;
 
+	@JsonProperty("error_description")
 	String error_description;
 
-	public PaymentError(String payment_id, ErrorType error, String error_description) {
-		this.payment_id = payment_id;
+	public PaymentError(String paymentId, ErrorType error, String error_description) {
+		this.paymentId = paymentId;
 		this.error = error;
 		this.error_description = error_description;
 	}
@@ -31,12 +34,12 @@ public class PaymentError {
 	public PaymentError() {
 	}
 
-	public String getPayment_id() {
-		return payment_id;
+	public String getPaymentId() {
+		return paymentId;
 	}
 
-	public void setPayment_id(String payment_id) {
-		this.payment_id = payment_id;
+	public void setPaymentId(String paymentId) {
+		this.paymentId = paymentId;
 	}
 
 	public ErrorType getError() {
@@ -54,5 +57,6 @@ public class PaymentError {
 	public void setError_description(String error_description) {
 		this.error_description = error_description;
 	}
+
 
 }

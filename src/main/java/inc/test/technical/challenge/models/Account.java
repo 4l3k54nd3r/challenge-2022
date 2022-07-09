@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "accounts")
@@ -22,19 +21,21 @@ public class Account {
 
 	private java.sql.Date birthdate;
 
-	private Date last_payment_date;
+	@Column(name = "last_payment_date")
+	private Date lastPaymentDate;
 
-	private Date created_on;
+	@Column(name = "created_on")
+	private Date createdOn;
 
 	public Account() {
 	}
 
-	public Account(int accountId, String email, java.sql.Date birthdate, Date last_payment_date, Date created_on) {
+	public Account(int accountId, String email, java.sql.Date birthdate, Date lastPaymentDate, Date createdOn) {
 		this.accountId = accountId;
 		this.email = email;
 		this.birthdate = birthdate;
-		this.last_payment_date = last_payment_date;
-		this.created_on = created_on;
+		this.lastPaymentDate = lastPaymentDate;
+		this.createdOn = createdOn;
 	}
 
 	public int getAccountId() {
@@ -61,20 +62,20 @@ public class Account {
 		this.birthdate = birthdate;
 	}
 
-	public Date getLast_payment_date() {
-		return last_payment_date;
+	public Date getLastPaymentDate() {
+		return lastPaymentDate;
 	}
 
-	public void setLast_payment_date(Date last_payment_date) {
-		this.last_payment_date = last_payment_date;
+	public void setLastPaymentDate(Date lastPaymentDate) {
+		this.lastPaymentDate = lastPaymentDate;
 	}
 
-	public Date getCreated_on() {
-		return created_on;
+	public Date getCreatedOn() {
+		return createdOn;
 	}
 
-	public void setCreated_on(Date created_on) {
-		this.created_on = created_on;
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
 	}
 
 }
