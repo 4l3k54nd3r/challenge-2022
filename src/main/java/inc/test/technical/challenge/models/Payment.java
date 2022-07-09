@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
@@ -25,17 +26,21 @@ public class Payment {
 
 	@Id
 	@Column(name = "payment_id")
+	@JsonProperty("payment_id")
 	String id;
 
 	@JoinColumn(name = "account_id")
+	@JsonProperty("account_id")
 	private int accountId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "payment_type")
+	@JsonProperty("payment_type")
 	private PaymentType paymentType;
 
 
 	@Column(name = "credit_card")
+	@JsonProperty("credit_card")
 	private String creditCard;
 
 	private BigInteger amount;

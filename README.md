@@ -12,6 +12,6 @@ Thw @KafkaListener in the Consumer component receives payments and processes the
 
 If the validation API takes longer than 1 second to reply then the payment is considered invalid.
 
-## :pushpin: Things to improve
+## :pushpin: Things to improve upon
 
-- Figure out how to convert payments from Kafka to Payment objects without the separate POJO.
+- Unit testing
