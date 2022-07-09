@@ -17,12 +17,10 @@ public class Consumer{
 
 	@KafkaListener(topics = {"online", "offline"}, groupId = "group", containerFactory = "paymentListener")
 	public void consume(Payment payment){
-		//System.out.println(payment.getCredit_card() + "\n");
 		try {
 			paymentService.processPayment(payment);
 		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 }
+

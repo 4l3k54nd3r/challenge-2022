@@ -1,18 +1,28 @@
 package inc.test.technical.challenge.models;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentError {
 
+	public enum ErrorType {
+		DATABASE,
+		NETWORK,
+		OTHER
+	}
+
 	String payment_id;
 
-	String error;
+	@Enumerated(EnumType.STRING)
+	private ErrorType error;
 
 	String error_description;
 
-	public PaymentError(String payment_id, String error, String error_description) {
+	public PaymentError(String payment_id, ErrorType error, String error_description) {
 		this.payment_id = payment_id;
 		this.error = error;
 		this.error_description = error_description;
@@ -29,11 +39,11 @@ public class PaymentError {
 		this.payment_id = payment_id;
 	}
 
-	public String getError() {
+	public ErrorType getError() {
 		return error;
 	}
 
-	public void setError(String error) {
+	public void setError(ErrorType error) {
 		this.error = error;
 	}
 

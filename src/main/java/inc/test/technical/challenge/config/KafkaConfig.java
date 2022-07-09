@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -16,12 +15,15 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import inc.test.technical.challenge.models.Payment;
 
+/**
+ * Does Kafka things
+ */
 @EnableKafka
 @Configuration
 public class KafkaConfig {
 
 	@Bean
-	public ConsumerFactory<String, Payment> consumerFactory(){
+	public ConsumerFactory<String, Payment> consumerFactory() {
 
 		Map<String, Object> config = new HashMap<>();
 		config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -41,13 +43,11 @@ public class KafkaConfig {
 				new JsonDeserializer<>(Payment.class));
 	}
 
-
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, Payment> paymentListener(){
+	public ConcurrentKafkaListenerContainerFactory<String, Payment> paymentListener() {
 		ConcurrentKafkaListenerContainerFactory<String, Payment> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(consumerFactory());
 		return factory;
 	}
-
 
 }

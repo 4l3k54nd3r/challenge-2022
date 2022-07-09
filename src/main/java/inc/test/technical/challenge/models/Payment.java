@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
@@ -14,19 +16,24 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "payments")
-public class Payment{
+public class Payment {
+	public enum PaymentType {
+		online,
+		offline
+	}
+
 	@Id
 	String payment_id;
 
 	@JoinColumn(name = "account_id")
 	private int account_id;
 
-	private String payment_type;
+	@Enumerated(EnumType.STRING)
+	private PaymentType payment_type;
 
 	private String credit_card;
 
 	private BigInteger amount;
-
 
 	@JsonIgnore
 	private Date created_on;
@@ -34,8 +41,7 @@ public class Payment{
 	public Payment() {
 	}
 
-
-	public Payment(String payment_id, int account_id, String payment_type, String credit_card, BigInteger amount,
+	public Payment(String payment_id, int account_id, PaymentType payment_type, String credit_card, BigInteger amount,
 			Date created_on) {
 		this.payment_id = payment_id;
 		this.account_id = account_id;
@@ -69,11 +75,12 @@ public class Payment{
 		this.account_id = account_id;
 	}
 
-	public String getPayment_type() {
+
+	public PaymentType getPayment_type() {
 		return payment_type;
 	}
 
-	public void setPayment_type(String payment_type) {
+	public void setPayment_type(PaymentType payment_type) {
 		this.payment_type = payment_type;
 	}
 

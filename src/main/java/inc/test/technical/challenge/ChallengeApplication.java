@@ -11,8 +11,4 @@ public class ChallengeApplication {
 		SpringApplication.run(ChallengeApplication.class, args);
 	}
 
-	//@Bean public NewTopic topic() {
-		//return TopicBuilder.name('');
-
-	//}
 }

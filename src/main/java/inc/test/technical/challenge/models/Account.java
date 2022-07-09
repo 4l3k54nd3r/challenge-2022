@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 
@@ -77,6 +76,5 @@ public class Account {
 	public void setCreated_on(Date created_on) {
 		this.created_on = created_on;
 	}
-
 
 }

@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import inc.test.technical.challenge.models.Account;
 
-public interface AccountRepository extends CrudRepository<Account, Long>{
+public interface AccountRepository extends CrudRepository<Account, Long> {
 	Optional<Account> findByAccountId(int accountId);
 }
